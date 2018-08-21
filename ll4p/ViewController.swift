@@ -9,21 +9,24 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    @IBOutlet weak var lblTime: UILabel!
     @IBOutlet weak var theBtn: UIButton!
 
     var buttons = [UIButton]()
     
     let words = ["The", "Left", "Lane", "Is", "For", "Passing"]
-    var shuffled = [0, 2, 1, 3, 4, 5] //Testing oprder, two swapped
+    var shuffled = [0, 1, 2, 3, 4, 5] // First time in, go in order
+    var start = DispatchTime.now()
+    var end = DispatchTime.now()
     
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        // Layout the buttons we need, adding to array
+        // Layout the buttons we need, adding to buttons array
         let width = view.frame.width
         let height = view.frame.height
-        let bHeight = Int(height - 100.0) / words.count
+        let bHeight = Int(height - 100.0) / (words.count + 1)
         
         var y:Int = 100
         for i in shuffled {
@@ -43,16 +46,18 @@ class ViewController: UIViewController {
     }
 
     func shuffleList() {
-        
+        shuffled = shuffled.shuffled()
+        for i in 0...shuffled.count-1 {
+            buttons[i].setTitle(words[shuffled[i]], for : .normal)
+            buttons[i].isHidden = false
+        }
     }
     
     func lowestButton() -> String {
         for word in words {
             for button in buttons {
                 if !button.isHidden {
-                    print("Comparing \(word) to \(button.currentTitle!)")
                     if button.currentTitle == word {
-                        print("Found First non hidden word")
                         return word
                     }
                 }
@@ -70,6 +75,16 @@ class ViewController: UIViewController {
         print("Button tapped")
         if sender.currentTitle == word {
             sender.isHidden = true
+            if word == "Passing" {
+                end = DispatchTime.now()
+                let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds // <<<<< Difference in nano seconds (UInt64)
+                let timeInterval = Double(nanoTime) / 1_000_000_000 // Technically could overflow for long running tests
+
+                print("Time = \(timeInterval) seconds")
+                lblTime.text = "\(timeInterval) seconds"
+                shuffleList()
+                start = DispatchTime.now()
+            }
         }
     }
     
