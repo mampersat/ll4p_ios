@@ -9,9 +9,12 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
-    @IBOutlet weak var lblTime: UILabel!
+
     @IBOutlet weak var theBtn: UIButton!
+
+    @IBOutlet weak var lblAvg: UILabel!
+    @IBOutlet weak var lblBest: UILabel!
+    @IBOutlet weak var lblLast: UILabel!
 
     var buttons = [UIButton]()
     
@@ -19,6 +22,9 @@ class ViewController: UIViewController {
     var shuffled = [0, 1, 2, 3, 4, 5] // First time in, go in order
     var start = DispatchTime.now()
     var end = DispatchTime.now()
+    var completions = 0
+    var totalTime = 0.0
+    var best = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,9 +85,20 @@ class ViewController: UIViewController {
                 end = DispatchTime.now()
                 let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds // <<<<< Difference in nano seconds (UInt64)
                 let timeInterval = Double(nanoTime) / 1_000_000_000 // Technically could overflow for long running tests
-
-                print("Time = \(timeInterval) seconds")
-                lblTime.text = "\(timeInterval) seconds"
+                let last = round(timeInterval * 1000) / 1000
+                
+                if (best == 0.0) || (last < best) {
+                    best = last
+                }
+                
+                completions += 1
+                totalTime += last
+                let avg = round( totalTime / Double(completions) * 1000) / 1000
+                
+                lblLast.text = "\(last)"
+                lblAvg.text = "\(avg)"
+                lblBest.text = "\(best)"
+                
                 shuffleList()
                 start = DispatchTime.now()
             }
