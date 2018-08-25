@@ -30,14 +30,15 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     
         // Layout the buttons we need, adding to buttons array
-        let width = view.frame.width
+        let width = view.frame.width - 20
         let height = view.frame.height
         let bHeight = Int(height - 100.0) / (words.count + 1)
         
         var y:Int = 100
         for i in shuffled {
             let word = words[i]
-            let button = UIButton(frame: CGRect(x: 0, y: y, width: Int(width), height: 50))
+            let button = UIButton( frame: CGRect(x: 10, y: y,width: Int(width), height: 50))
+            button.layer.cornerRadius = 5
             button.backgroundColor = .black
             button.setTitleColor(.white, for: .normal)
             button.setTitle(word, for: .normal)
