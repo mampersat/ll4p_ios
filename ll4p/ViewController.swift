@@ -18,8 +18,18 @@ class ViewController: UIViewController {
 
     var buttons = [UIButton]()
     
-    let words = ["The", "Left", "Lane", "Is", "For", "Passing"]
-    var shuffled = [0, 1, 2, 3, 4, 5] // First time in, go in order
+    // let words = ["The", "Left", "Lane", "Is", "For", "Passing"]
+    let words = ["Put Customers First",
+                 "Act Now, Iterate",
+                 "Nail the Basics",
+                 "Expect and Embrace Change",
+                 "Take Risks, Remain Calm",
+                 "Don't be a Jerk",
+                 "Own Without Ego",
+                 "Earn Trust, Give Trust",
+                 "Take Pride in your work",
+                 ]
+    var shuffled: [Int] = [] // First time in, go in order
     var start = DispatchTime.now()
     var end = DispatchTime.now()
     var completions = 0
@@ -29,9 +39,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        // set up things based on length of words
+        shuffled = Array(0...words.count-1)
+        
         // Layout the buttons we need, adding to buttons array
         let width = view.frame.width - 20
-        let height = view.frame.height
+        let height = view.frame.height - 50
         let bHeight = Int(height - 100.0) / (words.count + 1)
         
         var y:Int = 100
@@ -82,7 +95,7 @@ class ViewController: UIViewController {
         print("Button tapped")
         if sender.currentTitle == word {
             sender.isHidden = true
-            if word == "Passing" {
+            if word == words[words.count-1] {
                 end = DispatchTime.now()
                 let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds // <<<<< Difference in nano seconds (UInt64)
                 let timeInterval = Double(nanoTime) / 1_000_000_000 // Technically could overflow for long running tests
